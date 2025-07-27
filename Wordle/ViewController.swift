@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     
     // The correct answer for the Wordle game.
     // TODO: take dynamic words through some api
-    var answer: [Character] = ["h", "a", "u", "n", "t"]
+    var answer: [Character] = ["H", "A", "U", "N", "T"]
     
     // A 2D array to store the guesses for all 5 rows.
     // Each inner array represents a 5-character guess for a row.
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         return label
     }()
     
-    private let TableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         // Register the custom CardCollectionView cell
         tableView.register(CardCollectionView.self, forCellReuseIdentifier: CardCollectionView.identifier)
@@ -64,12 +64,12 @@ class ViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         // Set table view delegate and data source
-        TableView.delegate = self
-        TableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         
         // Add UI elements to the view
         view.addSubview(headingLabel)
-        view.addSubview(TableView)
+        view.addSubview(tableView)
         view.addSubview(submitButton)
         
         // Activate Auto Layout constraints
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
         // Initially set the first row as editable and focus its first text field
         // This needs a slight delay to ensure the cell is laid out and ready
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            if let firstCell = self.TableView.cellForRow(at: IndexPath(row: 0, section: self.currentGuessRowIndex)) as? CardCollectionView {
+            if let firstCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: self.currentGuessRowIndex)) as? CardCollectionView {
                 firstCell.focusFirstTextField()
             }
         }
@@ -93,12 +93,12 @@ class ViewController: UIViewController {
             headingLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             headingLabel.heightAnchor.constraint(equalToConstant: 32),
             
-            TableView.topAnchor.constraint(equalTo: headingLabel.bottomAnchor, constant: 16),
-            TableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            TableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            TableView.heightAnchor.constraint(equalToConstant: 600), // Adjust height as needed for 5 rows
+            tableView.topAnchor.constraint(equalTo: headingLabel.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tableView.heightAnchor.constraint(equalToConstant: 600),
             
-            submitButton.topAnchor.constraint(equalTo: TableView.bottomAnchor, constant: 20),
+            submitButton.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 20),
             submitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
             submitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
             submitButton.heightAnchor.constraint(equalToConstant: 50)
@@ -109,7 +109,7 @@ class ViewController: UIViewController {
     
     @objc func buttonTapped() {
         let indexPath = IndexPath(row: 0, section: currentGuessRowIndex)
-        guard let cell = TableView.cellForRow(at: indexPath) as? CardCollectionView else {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CardCollectionView else {
             print("Error: Could not get active guess cell.")
             return
         }
@@ -165,17 +165,17 @@ class ViewController: UIViewController {
         } else if currentGuessRowIndex < 4 {
             currentGuessRowIndex += 1
             cell.setEditable(false)
-            TableView.reloadData()
+            tableView.reloadData()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if let nextCell = self.TableView.cellForRow(at: IndexPath(row: 0, section: self.currentGuessRowIndex)) as? CardCollectionView {
+                if let nextCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: self.currentGuessRowIndex)) as? CardCollectionView {
                     nextCell.focusFirstTextField()
                 }
             }
             
         } else {
             print("Game Over! The word was \(answer)")
-            let alert = UIAlertController(title: "Game Over", message: "The word was \(answer).", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Game Over", message: "The word was \(String(answer)).", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Play Again", style: .default, handler: { _ in
                 self.resetGame()
             }))
@@ -193,9 +193,9 @@ class ViewController: UIViewController {
         let possibleWords = ["APPLE", "BAKER", "CRANE", "DREAM", "FLAME"]
         answer = Array(possibleWords.randomElement()?.uppercased() ?? "HAUNT")
         
-        TableView.reloadData()
+        tableView.reloadData()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            if let firstCell = self.TableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CardCollectionView {
+            if let firstCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CardCollectionView {
                 firstCell.focusFirstTextField()
             }
         }
@@ -269,7 +269,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             cell.setEditable(false)
             cell.shouldRevealResult = false
             cell.guess = Array(repeating: " ", count: 5)
-            cell.revealGuessResult() // This will call reloadData and reset colors via resetColor()
         }
         return cell
     }
