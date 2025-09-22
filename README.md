@@ -1,6 +1,6 @@
 # Wordle iOS
 
-A simple iOS clone of the popular Wordle game, built in Swift with UIKit. Guess the hidden word in 6 tries and get instant feedback through colored tiles.
+A simple iOS version of the popular Wordle game, built in Swift with UIKit. Guess the hidden word in 6 tries and get instant feedback through colored tiles.
 
 
 https://github.com/user-attachments/assets/dd433601-3f08-4113-b5c5-721405c1301b
